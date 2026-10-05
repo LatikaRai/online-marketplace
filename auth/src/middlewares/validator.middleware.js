@@ -1,4 +1,5 @@
 const { body, validationResult } = require("express-validator");
+const { errors } = require("mongodb-memory-server");
 
 const respondWithValidationErrors = (req,res,next) => {
     const errors = validationResult(req)
@@ -28,6 +29,31 @@ const registerUserValidation = [
     respondWithValidationErrors
 ]
 
+const loginUserValidation = [
+    body('email')
+    .optional()
+    .isEmail().withMessage('invalid email address')
+    .notEmpty().withMessage('email must not be empty'),
+    body('password')
+    .isLength({min:6}).withMessage('password must be 6 at least 6 characters long')
+    .notEmpty().withMessage('password must not be empty'),
+    body('username')
+    .optional()
+    .isString(). withMessage('username must be string')
+    .isLength({min: 3}).withMessage('username must be at least 3 characters long')
+    .notEmpty().withMessage('username must not be empty'),
+    (req,res,next)=>{
+        if(!req.body.email && !req.body.username){
+            return res.status(400).json({
+                errors: [{msg: 'either email or username is required'}]
+            })
+        }
+        next()
+    },
+    respondWithValidationErrors
+]
+
 module.exports = {
-    registerUserValidation
+    registerUserValidation,
+    loginUserValidation
 }

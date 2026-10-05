@@ -5,5 +5,6 @@ const authController = require('../controllers/auth.controller')
 const router = express.Router()
 
 router.post('/register', validator.registerUserValidation, authController.registerUser)
+router.post('/login', validator.loginUserValidation, authController.loginUser)
 
 module.exports = router
