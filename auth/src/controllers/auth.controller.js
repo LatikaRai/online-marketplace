@@ -105,7 +105,16 @@ async function loginUser(req, res) {
     }
     })
 }
+
+async function getUser(req,res) {
+    return res.status(200).json({
+        msg: 'current user fetch successfully',
+        user: req.user
+    })
+}
+
 module.exports = {
     registerUser,
-    loginUser
+    loginUser,
+    getUser
 }

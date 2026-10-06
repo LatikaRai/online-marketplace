@@ -38,9 +38,6 @@ describe('POST api/auth/login', () => {
 
         expect(res.status).toBe(200)
 
-        console.log('status',res.status)
-        console.log('status',res.body)
-
         expect(res.body.user).toBeDefined()
         expect(res.body.user.email).toBe('john@gmail.com')
 
