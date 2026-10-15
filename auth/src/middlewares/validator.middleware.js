@@ -1,5 +1,4 @@
-const { body, validationResult } = require("express-validator");
-const { errors } = require("mongodb-memory-server");
+const { body, validationResult, param } = require("express-validator");
 
 const respondWithValidationErrors = (req,res,next) => {
     const errors = validationResult(req)
@@ -52,8 +51,38 @@ const loginUserValidation = [
     },
     respondWithValidationErrors
 ]
+const userAddressValidation = [
+    body('street')
+    .notEmpty().withMessage('street must not be empty')
+    .isString(). withMessage('street must be string'),
+    body('city')
+    .notEmpty().withMessage('city must not be empty')
+    .isString(). withMessage('city must be string'),
+    body('state')
+    .notEmpty().withMessage('state must not be empty')
+    .isString(). withMessage('state must be string'),
+    body('pincode')
+    .notEmpty().withMessage('pincode must not be empty')
+    .isString(). withMessage('pincode must be string'),
+    body('country')
+    .notEmpty().withMessage('country must not be empty')
+    .isString(). withMessage('country must be string'),
+    body('isDefault')
+    .optional()
+    .isBoolean(). withMessage('isDefault must be boolean'),
+    respondWithValidationErrors
+]
+
+const addressIdValidation = [
+    param('addressId')
+    .isMongoId()
+    .withMessage('Invalid address ID'),
+    respondWithValidationErrors
+]
 
 module.exports = {
     registerUserValidation,
-    loginUserValidation
+    loginUserValidation,
+    userAddressValidation,
+    addressIdValidation
 }

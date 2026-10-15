@@ -9,11 +9,10 @@ describe('User addresses API', () => {
     let token
 
     const address = {
-        phone: '935968743',
         street: '123 Main Street',
         city: 'Delhi',
         state: 'Delhi',
-        postalCode: '110001',
+        pincode: '110001',
         country: 'India'
     }
 
@@ -35,9 +34,9 @@ describe('User addresses API', () => {
         )
     })
 
-    // GET /api/auth/users/addresses
+    // GET /api/auth/users/me/addresses
 
-    describe('GET /api/auth/users/addresses', () => {
+    describe('GET /api/auth/users/me/addresses', () => {
         test('returns all addresses of the logged-in user', async () => {
             user.addresses.push(
                 address,
@@ -49,7 +48,7 @@ describe('User addresses API', () => {
             await user.save()
 
             const res = await request(app)
-                .get('/api/auth/users/addresses')
+                .get('/api/auth/users/me/addresses')
                 .set('Cookie', `token=${token}`)
 
             expect(res.status).toBe(200)
@@ -61,7 +60,7 @@ describe('User addresses API', () => {
 
         test('returns an empty array when the user has no addresses', async () => {
             const res = await request(app)
-                .get('/api/auth/users/addresses')
+                .get('/api/auth/users/me/addresses')
                 .set('Cookie', `token=${token}`)
 
             expect(res.status).toBe(200)
@@ -70,18 +69,18 @@ describe('User addresses API', () => {
 
         test('returns 401 when the user is not authenticated', async () => {
             const res = await request(app)
-                .get('/api/auth/users/addresses')
+                .get('/api/auth/users/me/addresses')
 
             expect(res.status).toBe(401)
         })
     })
 
-    // POST /api/auth/users/addresses
+    // POST /api/auth/users/me/addresses
 
-    describe('POST /api/auth/users/addresses', () => {
+    describe('POST /api/auth/users/me/addresses', () => {
         test('adds a new address', async () => {
             const res = await request(app)
-                .post('/api/auth/users/addresses')
+                .post('/api/auth/users/me/addresses')
                 .set('Cookie', `token=${token}`)
                 .send(address)
 
@@ -97,7 +96,7 @@ describe('User addresses API', () => {
 
         test('returns 401 when the user is not authenticated', async () => {
             const res = await request(app)
-                .post('/api/auth/users/addresses')
+                .post('/api/auth/users/me/addresses')
                 .send(address)
 
             expect(res.status).toBe(401)
@@ -105,7 +104,7 @@ describe('User addresses API', () => {
 
         test('rejects invalid address data', async () => {
             const res = await request(app)
-                .post('/api/auth/users/addresses')
+                .post('/api/auth/users/me/addresses')
                 .set('Cookie', `token=${token}`)
                 .send({
                     city: 'Delhi'
@@ -118,9 +117,9 @@ describe('User addresses API', () => {
         })
     })
 
-    // DELETE /api/auth/users/addresses/:addressId
+    // DELETE /api/auth/users/me/addresses/:addressId
 
-    describe('DELETE /api/auth/users/addresses/:addressId', () => {
+    describe('DELETE /api/auth/users/me/addresses/:addressId', () => {
         test('deletes an existing address', async () => {
             user.addresses.push(address)
             await user.save()
@@ -128,7 +127,7 @@ describe('User addresses API', () => {
             const addressId = user.addresses[0]._id.toString()
 
             const res = await request(app)
-                .delete(`/api/auth/users/addresses/${addressId}`)
+                .delete(`/api/auth/users/me/addresses/${addressId}`)
                 .set('Cookie', `token=${token}`)
 
             expect(res.status).toBe(200)
@@ -145,7 +144,7 @@ describe('User addresses API', () => {
             const addressId = new mongoose.Types.ObjectId()
 
             const res = await request(app)
-                .delete(`/api/auth/users/addresses/${addressId}`)
+                .delete(`/api/auth/users/me/addresses/${addressId}`)
                 .set('Cookie', `token=${token}`)
 
             expect(res.status).toBe(404)
@@ -153,7 +152,7 @@ describe('User addresses API', () => {
 
         test('rejects an invalid address ID', async () => {
             const res = await request(app)
-                .delete('/api/auth/users/addresses/invalid-id')
+                .delete('/api/auth/users/me/addresses/invalid-id')
                 .set('Cookie', `token=${token}`)
 
             expect(res.status).toBe(400)
@@ -163,7 +162,7 @@ describe('User addresses API', () => {
             const addressId = new mongoose.Types.ObjectId()
 
             const res = await request(app)
-                .delete(`/api/auth/users/addresses/${addressId}`)
+                .delete(`/api/auth/users/me/addresses/${addressId}`)
 
             expect(res.status).toBe(401)
         })
